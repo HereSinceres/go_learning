@@ -1,0 +1,38 @@
+version: '3.6'
+services:
+  db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_HOST: localhost
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    #platform: "linux/x86_64" #only used by Apple M1 version
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - app_db:/var/lib/msql
+  
+  redis:
+    image: redis:5.0
+    restart: always
+    command: redis-server --requirepass root
+    ports:
+      - "6379:6379"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  app_db:
+
+networks:
+  nt_mysql:
+    driver: bridge
